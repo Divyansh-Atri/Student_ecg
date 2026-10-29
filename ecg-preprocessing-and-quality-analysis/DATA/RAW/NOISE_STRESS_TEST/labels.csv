@@ -1,0 +1,13 @@
+filename,record_id,fs_hz,n_samples,snr_db,dataset,note
+118e00_nst_ecg.csv,118e00,360.0,650000,00,nst,Higher dB = cleaner signal
+118e06_nst_ecg.csv,118e06,360.0,650000,06,nst,Higher dB = cleaner signal
+118e12_nst_ecg.csv,118e12,360.0,650000,12,nst,Higher dB = cleaner signal
+118e18_nst_ecg.csv,118e18,360.0,650000,18,nst,Higher dB = cleaner signal
+118e24_nst_ecg.csv,118e24,360.0,650000,24,nst,Higher dB = cleaner signal
+118e_6_nst_ecg.csv,118e_6,360.0,650000,-6,nst,Higher dB = cleaner signal
+119e00_nst_ecg.csv,119e00,360.0,650000,00,nst,Higher dB = cleaner signal
+119e06_nst_ecg.csv,119e06,360.0,650000,06,nst,Higher dB = cleaner signal
+119e12_nst_ecg.csv,119e12,360.0,650000,12,nst,Higher dB = cleaner signal
+119e18_nst_ecg.csv,119e18,360.0,650000,18,nst,Higher dB = cleaner signal
+119e24_nst_ecg.csv,119e24,360.0,650000,24,nst,Higher dB = cleaner signal
+119e_6_nst_ecg.csv,119e_6,360.0,650000,-6,nst,Higher dB = cleaner signal

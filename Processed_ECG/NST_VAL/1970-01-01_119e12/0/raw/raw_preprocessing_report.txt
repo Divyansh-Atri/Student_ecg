@@ -1,0 +1,28 @@
+================================================================================
+RAW ECG PREPROCESSING REPORT
+================================================================================
+Generated: 2026-05-30 01:47:26
+Source file: 00000000_119e12_nst_ecg.csv
+
+STRUCTURAL VALIDATION
+--------------------------------------------------------------------------------
+Rows loaded:                  650000
+Rows after sanitization:      650000
+Duplicate timestamps removed: 0
+Non-increasing removed:       0
+
+TIMING
+--------------------------------------------------------------------------------
+Estimated sampling rate (Hz): 333.33
+Median interval (ms):         3.000
+Irregular gap fraction:       0.000
+
+RAW SIGNAL STATISTICS
+--------------------------------------------------------------------------------
+Mean:  -5.727431
+Std:   0.977062
+Min:   -9.247778
+Max:   0.147778
+Range: 9.395556
+
+Note: This report is for data QC only (not diagnosis).

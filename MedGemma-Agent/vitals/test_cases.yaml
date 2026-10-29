@@ -1,0 +1,136 @@
+# Preloaded test cases — 8 clinically realistic scenarios
+# Vitals are raw measurements (SBP, DBP, HR, SpO2); scores are computed by the agent.
+# Cases are designed so TC-01 through TC-06 all reach the LLM analyzer.
+# TC-07 demonstrates the safety bypass (CRITICAL rule fires before LLM).
+# TC-08 demonstrates guardrail rejection of physiologically impossible input.
+#
+# qSOFA bypass triggers when ≥2 flags set: SBP≤100, HR>90, SpO2<94
+# To keep LLM engaged: at most 1 qSOFA flag and no single NEWS2 score of 3.
+
+test_cases:
+
+  TC-01:
+    name: "Stable post-operative recovery"
+    clinical_narrative: >
+      Day-2 post abdominal surgery. Patient alert, eating. Vitals entirely within
+      normal range. Baseline case — establishes what healthy looks like for this
+      monitoring system. LLM analyzes vitals and EHR context with no flags raised.
+    patient_id: "patient_277403"
+    systolic_bp: 122
+    diastolic_bp: 78
+    heart_rate: 74
+    spo2: 98
+    ehr_file: null
+    expected_alert: NORMAL
+    notes: "NEWS2=0, qSOFA=0. All vitals within normal range. LLM runs — expects NORMAL."
+
+  TC-02:
+    name: "Declining SpO2 — early respiratory concern"
+    clinical_narrative: >
+      Post-thoracic surgery, day-3. SpO2 has trended from 97% → 93% over 4 hours.
+      Mild SBP dip. HR still controlled. The patient's EHR notes a prior episode
+      of post-op atelectasis. LLM should flag respiratory deterioration risk.
+    patient_id: "patient_285272"
+    systolic_bp: 104
+    diastolic_bp: 68
+    heart_rate: 86
+    spo2: 93
+    ehr_file: "patient_285272_discharge_summary.pdf"
+    expected_alert: MEDIUM
+    notes: "NEWS2=3 (SBP+1, SpO2+2). qSOFA=1 (SpO2 flag only). LLM runs with EHR context."
+
+  TC-03:
+    name: "Borderline tachycardia — prior sepsis history"
+    clinical_narrative: >
+      Post-laparotomy day-4. Patient has mild tachycardia and borderline SpO2.
+      Vitals alone score MEDIUM, but the EHR documents a prior ICU admission for
+      abdominal sepsis. LLM has access to this history and may escalate the risk
+      level beyond what rule-based scoring alone would assign.
+    patient_id: "patient_243600"
+    systolic_bp: 108
+    diastolic_bp: 70
+    heart_rate: 94
+    spo2: 95
+    ehr_file: "patient_243600_discharge_summary.pdf"
+    expected_alert: MEDIUM
+    notes: "NEWS2=3 (SBP+1, HR+1, SpO2+1). qSOFA=1 (HR flag). LLM may escalate to HIGH given EHR."
+
+  TC-04:
+    name: "Tachycardia + raised DBP — cardiac stress pattern"
+    clinical_narrative: >
+      Post-CABG day-2. Persistent tachycardia with elevated diastolic pressure.
+      Pattern suggests uncompensated cardiac stress or pain response. SpO2 borderline.
+      EHR notes a prior myocardial infarction. This is a HIGH rule score and the
+      LLM is expected to reason about cardiac vs septic etiology.
+    patient_id: "patient_204132"
+    systolic_bp: 118
+    diastolic_bp: 96
+    heart_rate: 116
+    spo2: 95
+    ehr_file: "patient_204132_discharge_summary.pdf"
+    expected_alert: HIGH
+    notes: "NEWS2=5 (DBP+2, HR+2, SpO2+1). qSOFA=1 (HR flag only). LLM runs — cardiac stress pattern."
+
+  TC-05:
+    name: "Deceptively normal vitals — high-risk EHR"
+    clinical_narrative: >
+      Post-hip replacement day-1. Vitals are completely normal by rule-based scoring.
+      However, the patient's EHR reveals immunosuppression, recent corticosteroid use,
+      and a history of culture-confirmed sepsis 8 months ago. This case tests whether
+      the LLM can identify latent risk the rules cannot see.
+    patient_id: "patient_210474"
+    systolic_bp: 113
+    diastolic_bp: 72
+    heart_rate: 87
+    spo2: 97
+    ehr_file: "patient_210474_discharge_summary.pdf"
+    expected_alert: NORMAL
+    notes: "NEWS2=0, qSOFA=0. Rules say NORMAL. LLM runs — EHR may cause it to flag latent risk."
+
+  TC-06:
+    name: "Trending tachycardia — post-abdominal surgery with EHR"
+    clinical_narrative: >
+      Post-colectomy day-3. Mild tachycardia and slight SpO2 dip versus yesterday.
+      The patient's EHR documents prior MRSA wound infection requiring IV antibiotics.
+      Borderline vitals with infection history — tests whether the LLM reads trajectory
+      concern into what looks like a moderate picture on the numbers alone.
+    patient_id: "patient_277403"
+    systolic_bp: 106
+    diastolic_bp: 66
+    heart_rate: 98
+    spo2: 95
+    ehr_file: "patient_277403_discharge_summary.pdf"
+    expected_alert: MEDIUM
+    notes: "NEWS2=3 (SBP+1, HR+1, SpO2+1). qSOFA=1 (HR flag). LLM runs with EHR — may escalate."
+
+  TC-07:
+    name: "Hemodynamic failure — immediate critical bypass"
+    clinical_narrative: >
+      Post-major vascular surgery. Acute hemodynamic deterioration: severe hypotension,
+      tachycardia, and hypoxia. Single NEWS2 scores of 3 trigger the safety bypass —
+      the LLM is intentionally not called. This demonstrates the safety-first design:
+      critical deterioration must never be gated on LLM availability.
+    patient_id: "patient_204132"
+    systolic_bp: 82
+    diastolic_bp: 52
+    heart_rate: 128
+    spo2: 89
+    ehr_file: null
+    expected_alert: CRITICAL
+    notes: "SBP≤90 → NEWS2 score 3 → immediate CRITICAL bypass. LLM not called by design."
+
+  TC-08:
+    name: "Physiologically impossible input — guardrail rejection"
+    clinical_narrative: >
+      Simulates a faulty sensor or data entry error: heart rate of 320 bpm is outside
+      the physiologically plausible range (1–300 bpm). The input guardrail rejects
+      this before any clinical scoring or LLM call. No alert is generated;
+      the rejection is logged to the audit trail.
+    patient_id: "patient_guardrail_test"
+    systolic_bp: 120
+    diastolic_bp: 80
+    heart_rate: 320
+    spo2: 98
+    ehr_file: null
+    expected_alert: REJECTED
+    notes: "HR=320 exceeds plausible max (300 bpm). Rejected at Pydantic validation layer."

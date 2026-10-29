@@ -1,0 +1,166 @@
+# ABG Test Cases — 8 clinically designed scenarios
+# All values: pH unitless, PaO2/PaCO2 in mmHg, HCO3/lactate in mmol/L
+
+test_cases:
+
+  - id: ABG-01
+    name: Normal ABG
+    patient_id: abg_patient_01
+    description: Healthy resting adult on room air. All values within normal reference ranges.
+    values:
+      pH: 7.40
+      pao2_mmhg: 95.0
+      paco2_mmhg: 40.0
+      hco3: 24.0
+      base_excess: 0.0
+      lactate: 0.8
+      fio2: 0.21
+      na: 140
+      cl: 104
+      albumin: 4.0
+    expected_alert: NORMAL
+    expected_disorder: none
+    notes: "Baseline normal. NEWS2=0 equivalent. LLM should confirm no clinical concerns."
+
+  - id: ABG-02
+    name: Type 1 Respiratory Failure — PE pattern
+    patient_id: abg_patient_02
+    description: >
+      Post-surgical patient with sudden dyspnoea and pleuritic chest pain.
+      Low PaO2 with low PaCO2 indicating hyperventilation. Suspect pulmonary embolism.
+    values:
+      pH: 7.49
+      pao2_mmhg: 56.0
+      paco2_mmhg: 29.0
+      hco3: 22.0
+      base_excess: -1.0
+      lactate: 1.0
+      fio2: 0.21
+    expected_alert: HIGH
+    expected_disorder: respiratory_alkalosis
+    notes: "Type 1 RF with acute respiratory alkalosis. P/F ~267. Classic PE or anxiety hyperventilation pattern."
+
+  - id: ABG-03
+    name: Acute Type 2 Respiratory Failure — COPD Exacerbation
+    patient_id: abg_patient_03
+    description: >
+      Known COPD patient presenting with worsening dyspnoea, increased sputum.
+      High PaCO2 with low PaO2. Acute decompensation on background of chronic CO2 retention.
+    values:
+      pH: 7.21
+      pao2_mmhg: 54.0
+      paco2_mmhg: 64.0
+      hco3: 29.0
+      base_excess: 4.0
+      lactate: 1.0
+      fio2: 0.21
+      chronic_copd: true
+    expected_alert: CRITICAL
+    expected_disorder: respiratory_acidosis
+    notes: "Acute on chronic respiratory acidosis. pH 7.21 — CRITICAL. Needs urgent NIV."
+
+  - id: ABG-04
+    name: Chronic Compensated Respiratory Acidosis — Stable COPD
+    patient_id: abg_patient_04
+    description: >
+      Stable COPD patient at baseline. Chronically elevated PaCO2 with metabolic
+      compensation (raised HCO3). pH near normal despite CO2 retention.
+    values:
+      pH: 7.37
+      pao2_mmhg: 67.0
+      paco2_mmhg: 60.0
+      hco3: 32.0
+      base_excess: 5.0
+      lactate: 1.0
+      fio2: 0.21
+      chronic_copd: true
+    expected_alert: MEDIUM
+    expected_disorder: respiratory_acidosis
+    notes: "Chronic compensated respiratory acidosis. pH maintained. HCO3 raised as compensation."
+
+  - id: ABG-05
+    name: High AG Metabolic Acidosis — Lactic Acidosis (Sepsis)
+    patient_id: abg_patient_05
+    description: >
+      Post-operative patient with fever, hypotension, and tachycardia.
+      Markedly elevated lactate. High anion gap metabolic acidosis with partial respiratory compensation.
+    values:
+      pH: 7.18
+      pao2_mmhg: 71.0
+      paco2_mmhg: 26.0
+      hco3: 12.0
+      base_excess: -12.0
+      lactate: 5.0
+      fio2: 0.35
+      na: 140
+      cl: 100
+      albumin: 3.0
+    expected_alert: CRITICAL
+    expected_disorder: metabolic_acidosis
+    notes: "HAGMA with lactate 5.0 — CRITICAL. Sepsis pattern. Partial respiratory compensation present."
+
+  - id: ABG-06
+    name: High AG Metabolic Acidosis — DKA Pattern
+    patient_id: abg_patient_06
+    description: >
+      Diabetic patient presenting with vomiting, polyuria, and confusion.
+      Known type 1 diabetes. Ketones positive. Glucose markedly elevated.
+    values:
+      pH: 7.12
+      pao2_mmhg: 86.0
+      paco2_mmhg: 23.0
+      hco3: 10.0
+      base_excess: -17.0
+      lactate: 1.5
+      fio2: 0.21
+      na: 130
+      cl: 96
+      albumin: 4.0
+      glucose: 22.0
+      ketones: true
+    expected_alert: CRITICAL
+    expected_disorder: metabolic_acidosis
+    notes: "HAGMA with high glucose and ketones — DKA pattern. pH 7.12 — CRITICAL."
+
+  - id: ABG-07
+    name: Mixed Disorder — Metabolic Acidosis + Respiratory Alkalosis (Sepsis)
+    patient_id: abg_patient_07
+    description: >
+      Critically ill patient with known infection, tachypnoea and hypotension.
+      Low HCO3 with inappropriately low PaCO2 — PaCO2 is lower than expected by Winters formula,
+      indicating concurrent respiratory alkalosis (hyperventilation from sepsis/SIRS).
+    values:
+      pH: 7.36
+      pao2_mmhg: 67.0
+      paco2_mmhg: 23.0
+      hco3: 15.0
+      base_excess: -9.0
+      lactate: 4.0
+      fio2: 0.40
+      na: 140
+      cl: 100
+      albumin: 4.0
+    expected_alert: CRITICAL
+    expected_disorder: mixed
+    notes: "Mixed disorder — metabolic acidosis + respiratory alkalosis. Lactate 4.0 — CRITICAL. Classic severe sepsis pattern."
+
+  - id: ABG-08
+    name: Metabolic Alkalosis — Post-Vomiting
+    patient_id: abg_patient_08
+    description: >
+      Patient with prolonged vomiting following gastric outlet obstruction.
+      Loss of HCl causing metabolic alkalosis with appropriate hypoventilation as compensation.
+    values:
+      pH: 7.52
+      pao2_mmhg: 90.0
+      paco2_mmhg: 48.0
+      hco3: 36.0
+      base_excess: 10.0
+      lactate: 1.2
+      fio2: 0.21
+      na: 138
+      cl: 88
+      albumin: 4.0
+    expected_alert: MEDIUM
+    expected_disorder: metabolic_alkalosis
+    notes: "Primary metabolic alkalosis with appropriate respiratory compensation. Hypochloraemic pattern consistent with vomiting."

@@ -1,0 +1,50 @@
+# =========================
+# Python cache / environment
+# =========================
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# =========================
+# Output / Generated ECG data
+# =========================
+
+Processed_ECG/
+Processed_ECG_test/
+logs_test/
+output/
+
+# Keep raw data SAFE (DO NOT commit real ECG data)
+# DATA/ is included for demo, but do not push real patient data to public repos!
+
+# =========================
+# Jupyter / IDE
+# =========================
+.ipynb_checkpoints/
+.vscode/
+
+# =========================
+# System files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs (only runtime logs)
+# =========================
+*.log
+
+# =========================
+# OPTIONAL (IMPORTANT FIX)
+# =========================
+# DO NOT ignore CSV globally
+# *.csv  ❌ REMOVE THIS (important for code & sample data)
+
+# DO NOT ignore PNG globally
+# *.png  ❌ REMOVE THIS (you need plots in GitHub README)
+
+# =========================
+# KEEP IMPORTANT FILES
+# =========================
+# Your code uses CSV/PNG outputs, so we should NOT block them globally

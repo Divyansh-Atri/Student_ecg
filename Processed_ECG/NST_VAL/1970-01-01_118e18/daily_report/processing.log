@@ -1,0 +1,6 @@
+2026-05-30 01:40:59 | INFO    | process_one_file:918 | [OK] 00000000_118e18_nst_ecg.csv | group=1970-01-01_118e18 | HR=76.1 BPM | Quality=78.6/100 (GOOD) | segments=361
+2026-05-30 01:40:59 | INFO    | process_daily_folder:1068 | [5/24] Processing 00000000_118e24_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1076 | Daily summary written for group: 1970-01-01_118e18
+2026-05-30 01:46:35 | INFO    | process_one_file:918 | [OK] 00000000_118e18_nst_ecg.csv | group=1970-01-01_118e18 | HR=76.1 BPM | Quality=78.6/100 (GOOD) | segments=361
+2026-05-30 01:46:35 | INFO    | process_daily_folder:1068 | [5/24] Processing 00000000_118e24_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1076 | Daily summary written for group: 1970-01-01_118e18

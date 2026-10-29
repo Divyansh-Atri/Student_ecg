@@ -1,0 +1,47 @@
+{
+  "source_file": "00000000_119e18_nst_ecg.csv",
+  "recording_timestamp_ms": 0,
+  "patch_id": "119e18",
+  "group_name": "1970-01-01_119e18",
+  "target_fs_hz": 125.0,
+  "powerline_hz": 50.0,
+  "duration_s": 1805.544,
+  "sampling_rate_est_hz": 333.3333333333333,
+  "irregular_gap_fraction": 0.0,
+  "normalization": {
+    "method": "zscore",
+    "mean": 0.039813868109778945,
+    "std": 0.44032236593563284
+  },
+  "quality": {
+    "score_0_100": 28.303894088796202,
+    "label": "UNUSABLE"
+  },
+  "noise_counts": {
+    "flatline_count": 0,
+    "spike_count": 343,
+    "jump_count": 12316
+  },
+  "rpeaks": {
+    "count": 2533,
+    "heart_rate_bpm": 85.29893048611802
+  },
+  "segments": {
+    "segment_seconds": 5.0,
+    "segment_count": 361
+  },
+  "beat_segments": {
+    "pre_ms": 200.0,
+    "post_ms": 400.0,
+    "beat_count": 2533,
+    "mean_similarity": 0.7266894235984357
+  },
+  "preprocessing_steps": [
+    "Outlier control: robust clipping (median +/- 12*MAD)",
+    "Spike suppression: Hampel filter (~200 ms window)",
+    "High-pass @ ~0.5 Hz (baseline wander removal)",
+    "Notch @ 50 Hz (powerline interference removal)",
+    "Low-pass @ ~40 Hz (high-frequency/EMG noise removal)",
+    "NeuroKit2: nk.ecg_clean(method='neurokit')"
+  ]
+}

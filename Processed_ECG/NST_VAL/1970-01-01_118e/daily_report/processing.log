@@ -1,0 +1,17 @@
+2026-05-30 01:41:19 | ERROR   | process_one_file:932 | [FAILED] 00000000_118e_6_nst_ecg.csv | group=1970-01-01_118e | boolean index did not match indexed array along axis 0; size of axis is 2348 but size of corresponding boolean axis is 2349
+Traceback (most recent call last):
+  File "/home/divyansh/research/vitalpatch /vitalmodel/ecg-preprocessing-and-quality-analysis/scripts/process_daily_ecg.py", line 798, in process_one_file
+    quality = score_ecg_quality(
+        cleaned=cleaned,
+    ...<4 lines>...
+        powerline_hz=cfg.powerline_hz,
+    )
+  File "/home/divyansh/research/vitalpatch /vitalmodel/ecg-preprocessing-and-quality-analysis/scripts/process_daily_ecg.py", line 1295, in score_ecg_quality
+    seg_sim_vals = sim_scores[p_mask]
+                   ~~~~~~~~~~^^^^^^^^
+IndexError: boolean index did not match indexed array along axis 0; size of axis is 2348 but size of corresponding boolean axis is 2349
+2026-05-30 01:41:19 | INFO    | process_daily_folder:1068 | [7/24] Processing 00000000_119e00_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1076 | Daily summary written for group: 1970-01-01_118e
+2026-05-30 01:47:01 | INFO    | process_one_file:918 | [OK] 00000000_118e_6_nst_ecg.csv | group=1970-01-01_118e | HR=78.7 BPM | Quality=57.2/100 (POOR) | segments=361
+2026-05-30 01:47:01 | INFO    | process_daily_folder:1068 | [7/24] Processing 00000000_119e00_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1076 | Daily summary written for group: 1970-01-01_118e

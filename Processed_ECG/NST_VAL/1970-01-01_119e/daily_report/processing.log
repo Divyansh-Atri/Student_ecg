@@ -1,0 +1,39 @@
+2026-05-30 01:42:27 | ERROR   | process_one_file:932 | [FAILED] 00000000_119e_6_nst_ecg.csv | group=1970-01-01_119e | boolean index did not match indexed array along axis 0; size of axis is 2573 but size of corresponding boolean axis is 2574
+Traceback (most recent call last):
+  File "/home/divyansh/research/vitalpatch /vitalmodel/ecg-preprocessing-and-quality-analysis/scripts/process_daily_ecg.py", line 798, in process_one_file
+    quality = score_ecg_quality(
+        cleaned=cleaned,
+    ...<4 lines>...
+        powerline_hz=cfg.powerline_hz,
+    )
+  File "/home/divyansh/research/vitalpatch /vitalmodel/ecg-preprocessing-and-quality-analysis/scripts/process_daily_ecg.py", line 1295, in score_ecg_quality
+    seg_sim_vals = sim_scores[p_mask]
+                   ~~~~~~~~~~^^^^^^^^
+IndexError: boolean index did not match indexed array along axis 0; size of axis is 2573 but size of corresponding boolean axis is 2574
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [13/24] Processing 118e00_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [14/24] Processing 118e06_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [15/24] Processing 118e12_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [16/24] Processing 118e18_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [17/24] Processing 118e24_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [18/24] Processing 118e_6_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [19/24] Processing 119e00_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [20/24] Processing 119e06_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [21/24] Processing 119e12_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [22/24] Processing 119e18_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [23/24] Processing 119e24_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1068 | [24/24] Processing 119e_6_nst_ecg.csv
+2026-05-30 01:42:27 | INFO    | process_daily_folder:1076 | Daily summary written for group: 1970-01-01_119e
+2026-05-30 01:48:16 | INFO    | process_one_file:918 | [OK] 00000000_119e_6_nst_ecg.csv | group=1970-01-01_119e | HR=86.4 BPM | Quality=25.2/100 (UNUSABLE) | segments=361
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [13/24] Processing 118e00_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [14/24] Processing 118e06_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [15/24] Processing 118e12_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [16/24] Processing 118e18_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [17/24] Processing 118e24_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [18/24] Processing 118e_6_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [19/24] Processing 119e00_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [20/24] Processing 119e06_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [21/24] Processing 119e12_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [22/24] Processing 119e18_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [23/24] Processing 119e24_nst_ecg.csv
+2026-05-30 01:48:16 | INFO    | process_daily_folder:1068 | [24/24] Processing 119e_6_nst_ecg.csv
+2026-05-30 01:48:17 | INFO    | process_daily_folder:1076 | Daily summary written for group: 1970-01-01_119e

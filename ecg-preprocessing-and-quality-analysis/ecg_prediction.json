@@ -1,0 +1,17 @@
+{
+    "modality": "ECG",
+    "metadata": {
+        "source_file": "118e_6_nst_ecg.csv",
+        "pipeline_version": "1.0.0"
+    },
+    "quality_metrics": {
+        "label": "POOR",
+        "score_pct": 0.5769230769230769
+    },
+    "clinical_features": {
+        "arrhythmia_detected": true,
+        "probability": 0.0,
+        "burden_pct": 94.71153846153845
+    },
+    "prompt_override": "The patient's ECG signal has POOR quality. The analysis detected an arrhythmia burden of 94.7%. Please provide a detailed clinical interpretation."
+}

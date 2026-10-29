@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedGemma Agent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#2563eb', dark: '#1d4ed8', light: '#eff6ff' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+
+<!-- ── LANDING ─────────────────────────────────────────────────────────────── -->
+<div id="landing" style="display:flex" class="min-h-screen items-center justify-center px-4 py-16">
+  <div class="w-full max-w-lg flex flex-col items-center text-center gap-6">
+
+    <!-- Badge -->
+    <span class="text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-200">
+      Research Preview · IIIT-H
+    </span>
+
+    <!-- Logo + Title -->
+    <div>
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <div class="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 2v20M2 12h20"/>
+          </svg>
+        </div>
+        <h1 class="text-3xl font-bold tracking-tight">MedGemma Agent</h1>
+      </div>
+      <p class="text-slate-500 text-base">Post-Operative Intelligent Monitoring</p>
+    </div>
+
+    <!-- Description -->
+    <p class="text-sm text-slate-500 leading-relaxed">
+      AI-powered clinical decision support for post-operative sepsis risk.
+      Combines rule-based early warning scores (NEWS2 + qSOFA) with contextual
+      reasoning from a quantized medical language model — running fully offline on your machine.
+    </p>
+
+    <!-- Model card -->
+    <div class="w-full bg-white border border-slate-200 rounded-xl p-5 text-left shadow-sm">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-600 text-white">Model</span>
+        <span class="text-sm font-semibold">MedGemma 4B · 4-bit Quantized</span>
+      </div>
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Base</p>
+          <p class="text-sm text-slate-700">Google MedGemma 4B</p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Quantization</p>
+          <p class="text-sm text-slate-700">GGUF Q4_K_M via Ollama</p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Inference</p>
+          <p class="text-sm text-slate-700">Local · fully offline</p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">EHR Retrieval</p>
+          <p class="text-sm text-slate-700">ChromaDB + all-MiniLM-L6-v2</p>
+        </div>
+      </div>
+      <p class="text-xs text-slate-400 leading-relaxed border-t border-slate-100 pt-3">
+        MedGemma is fine-tuned on clinical text, radiology reports, and medical literature.
+        The 4-bit quantized version runs on consumer hardware while retaining strong clinical reasoning.
+        <strong class="text-slate-500">All outputs are decision support only — not a substitute for clinical judgment.</strong>
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <button onclick="enterApp()"
+      class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors shadow-sm text-sm">
+      Test It Out
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </button>
+
+    <p class="text-xs text-slate-400">Ollama · FastAPI · LangGraph · ChromaDB</p>
+  </div>
+</div>
+
+<!-- ── APP ────────────────────────────────────────────────────────────────── -->
+<div id="app" style="display:none" class="h-screen flex flex-col">
+
+  <!-- Top bar -->
+  <header class="h-14 bg-white border-b border-slate-200 flex items-center px-4 gap-3 flex-shrink-0">
+    <!-- Back -->
+    <button onclick="goBack()" class="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-500 transition-colors">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+
+    <!-- Brand -->
+    <div class="flex items-center gap-2 mr-4">
+      <div class="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round">
+          <path d="M12 2v20M2 12h20"/>
+        </svg>
+      </div>
+      <span class="font-bold text-sm">MedGemma Agent</span>
+    </div>
+
+    <!-- Tabs -->
+    <nav class="flex gap-1 flex-1">
+      <button data-tab="manual" onclick="switchTab('manual')"
+        class="toptab px-4 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-100 transition-colors active-tab">
+        Manual Entry
+      </button>
+      <button data-tab="testcases" onclick="switchTab('testcases')"
+        class="toptab px-4 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-100 transition-colors">
+        Test Cases
+      </button>
+      <button data-tab="history" onclick="switchTab('history')"
+        class="toptab px-4 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-100 transition-colors">
+        Alert History
+      </button>
+      <button data-tab="abg" onclick="switchTab('abg')"
+        class="toptab px-4 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-100 transition-colors">
+        ABG Interpreter
+      </button>
+    </nav>
+
+    <!-- Right: health + API key -->
+    <div class="flex items-center gap-3">
+      <div id="health-dot" title="Checking..." class="w-2.5 h-2.5 rounded-full bg-slate-300 transition-colors"></div>
+      <input id="apiKey" type="password" placeholder="API Key"
+        class="text-sm border border-slate-200 rounded-lg px-3 py-1.5 w-40 bg-slate-50 focus:outline-none focus:border-blue-400" />
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="flex-1 overflow-y-auto">
+
+    <!-- ── Manual Entry ──────────────────────────────────────────────────── -->
+    <div id="tab-manual" class="tabpanel max-w-3xl mx-auto px-6 py-8" style="display:block">
+      <h2 class="text-xl font-bold mb-1">Submit Vitals for Analysis</h2>
+      <p class="text-sm text-slate-500 mb-8 leading-relaxed">
+        Enter raw measurements. The agent scores NEWS2 + qSOFA, retrieves any available EHR context, then runs MedGemma to assess sepsis risk.
+      </p>
+
+      <!-- Patient ID -->
+      <div class="mb-6">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Patient ID</label>
+        <input id="v-patient" type="text" placeholder="e.g. patient_277403"
+          class="border border-slate-200 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:border-blue-400 bg-white" />
+      </div>
+
+      <!-- Vitals -->
+      <div class="mb-6">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Vital Signs</label>
+        <div class="grid grid-cols-4 gap-3">
+          <div class="bg-white border border-slate-200 rounded-xl p-4">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Systolic BP</p>
+            <div class="flex items-baseline gap-1">
+              <input id="v-sbp" type="number" placeholder="120"
+                class="w-full text-2xl font-bold text-slate-800 focus:outline-none bg-transparent" />
+            </div>
+            <p class="text-xs text-slate-400 mt-1">mmHg</p>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-xl p-4">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Diastolic BP</p>
+            <input id="v-dbp" type="number" placeholder="80"
+              class="w-full text-2xl font-bold text-slate-800 focus:outline-none bg-transparent" />
+            <p class="text-xs text-slate-400 mt-1">mmHg</p>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-xl p-4">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Heart Rate</p>
+            <input id="v-hr" type="number" placeholder="72"
+              class="w-full text-2xl font-bold text-slate-800 focus:outline-none bg-transparent" />
+            <p class="text-xs text-slate-400 mt-1">bpm</p>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-xl p-4">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">SpO₂</p>
+            <input id="v-spo2" type="number" placeholder="98"
+              class="w-full text-2xl font-bold text-slate-800 focus:outline-none bg-transparent" />
+            <p class="text-xs text-slate-400 mt-1">%</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EHR Upload -->
+      <div class="mb-8">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+          EHR Context <span class="normal-case font-normal text-slate-300 ml-1">optional</span>
+        </label>
+        <label class="flex flex-col items-center gap-2 border-2 border-dashed border-slate-200 hover:border-blue-300 rounded-xl p-6 cursor-pointer transition-colors bg-white">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <p class="text-sm text-slate-500 font-medium">Upload patient EHR (PDF)</p>
+          <p class="text-xs text-slate-400 text-center">Chunked, de-identified, and embedded before MedGemma is called</p>
+          <span class="mt-1 text-xs font-semibold border border-slate-200 rounded-lg px-3 py-1.5 text-slate-600 hover:border-blue-400 hover:text-blue-600 transition-colors">
+            Choose PDF
+          </span>
+          <input id="v-ehr-file" type="file" accept=".pdf" class="hidden" onchange="handleEhrSelect(this)" />
+        </label>
+        <p id="ehr-file-name" class="hidden mt-2 text-xs text-blue-600 font-medium"></p>
+      </div>
+
+      <!-- Submit -->
+      <button onclick="submitVitals()"
+        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors text-sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+        </svg>
+        Analyze with MedGemma
+      </button>
+
+      <!-- Result -->
+      <div id="vitals-result" class="hidden mt-6"></div>
+    </div>
+
+    <!-- ── Test Cases ─────────────────────────────────────────────────────── -->
+    <div id="tab-testcases" class="tabpanel max-w-3xl mx-auto px-6 py-8" style="display:none">
+      <h2 class="text-xl font-bold mb-1">Preloaded Test Cases</h2>
+      <p class="text-sm text-slate-500 mb-8 leading-relaxed">
+        Eight clinically designed scenarios. TC-01 through TC-06 all reach MedGemma — built to show contextual reasoning, not just rule-based scoring. EHR-linked cases auto-ingest the synthetic discharge summary before analysis.
+      </p>
+      <div id="tc-loading" class="flex items-center gap-3 text-sm text-slate-400">
+        <div class="spinner w-4 h-4 border-2 border-slate-200 border-t-blue-500 rounded-full animate-spin"></div>
+        Loading test cases…
+      </div>
+      <div id="tc-list" class="flex flex-col gap-4"></div>
+    </div>
+
+    <!-- ── Alert History ───────────────────────────────────────────────────── -->
+    <div id="tab-history" class="tabpanel max-w-3xl mx-auto px-6 py-8" style="display:none">
+      <h2 class="text-xl font-bold mb-6">Alert History</h2>
+      <div class="flex gap-3 mb-6 flex-wrap items-center">
+        <input id="h-patient" type="text" placeholder="Filter by patient ID"
+          class="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-white" />
+        <select id="h-severity"
+          class="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-white">
+          <option value="">All severities</option>
+          <option value="CRITICAL">CRITICAL</option>
+          <option value="HIGH">HIGH</option>
+          <option value="MEDIUM">MEDIUM</option>
+          <option value="NORMAL">NORMAL</option>
+        </select>
+        <button onclick="loadAlerts()"
+          class="border border-slate-200 rounded-lg px-4 py-2 text-sm font-medium hover:border-blue-400 hover:text-blue-600 transition-colors bg-white">
+          Refresh
+        </button>
+      </div>
+      <div id="alerts-list" class="flex flex-col gap-3"></div>
+    </div>
+
+    <!-- ── ABG Interpreter ──────────────────────────────────────────────────── -->
+    <div id="tab-abg" class="tabpanel max-w-3xl mx-auto px-6 py-8" style="display:none">
+      <h2 class="text-xl font-bold mb-1">ABG Interpreter</h2>
+      <p class="text-sm text-slate-500 mb-6 leading-relaxed">
+        Enter arterial blood gas values for rule-based interpretation (respiratory failure type, acid-base disorder,
+        compensation, anion gap) followed by MedGemma clinical reasoning.
+      </p>
+
+      <!-- Sub-tabs -->
+      <div class="flex gap-1 mb-8 border-b border-slate-200">
+        <button id="abg-tab-manual" onclick="switchAbgTab('manual')"
+          class="px-4 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600 -mb-px transition-colors">
+          Manual Entry
+        </button>
+        <button id="abg-tab-testcases" onclick="switchAbgTab('testcases')"
+          class="px-4 py-2 text-sm font-medium text-slate-500 border-b-2 border-transparent -mb-px hover:text-slate-700 transition-colors">
+          Test Cases
+        </button>
+        <button id="abg-tab-history" onclick="switchAbgTab('history')"
+          class="px-4 py-2 text-sm font-medium text-slate-500 border-b-2 border-transparent -mb-px hover:text-slate-700 transition-colors">
+          History
+        </button>
+      </div>
+
+      <!-- Manual Entry Panel -->
+      <div id="abg-panel-manual">
+
+        <!-- PDF Upload Card -->
+        <div class="mb-8 bg-blue-50 border border-blue-200 rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            <p class="text-sm font-semibold text-blue-700">Upload ABG Lab Report PDF</p>
+            <span class="text-xs font-medium text-blue-400 ml-1">— auto-fills the form below</span>
+          </div>
+          <p class="text-xs text-blue-600 mb-4 leading-relaxed">
+            Drop any ABG machine printout or lab report PDF. Values will be extracted and pre-filled — review before submitting.
+          </p>
+          <label class="flex flex-col items-center gap-2 border-2 border-dashed border-blue-200 hover:border-blue-400 rounded-xl p-5 cursor-pointer transition-colors bg-white" id="abg-pdf-drop-zone">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <p class="text-sm text-slate-500 font-medium">Drag & drop or click to choose PDF</p>
+            <span class="text-xs font-semibold border border-blue-200 rounded-lg px-3 py-1.5 text-blue-600 hover:bg-blue-50 transition-colors">Choose PDF</span>
+            <input id="abg-pdf-file" type="file" accept=".pdf" class="hidden" onchange="handleABGPdfUpload(this)" />
+          </label>
+          <div id="abg-pdf-status" class="hidden mt-3"></div>
+        </div>
+
+        <!-- Patient ID -->
+        <div class="mb-6">
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Patient ID</label>
+          <input id="abg-patient" type="text" placeholder="e.g. abg_patient_01"
+            class="border border-slate-200 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:border-blue-400 bg-white" />
+        </div>
+
+        <!-- Core ABG values -->
+        <div class="mb-6">
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Core ABG Values</label>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="bg-white border border-slate-200 rounded-xl p-4">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">pH</p>
+              <input id="abg-ph" type="number" step="0.01" placeholder="7.40"
+                class="w-full text-2xl font-bold text-slate-800 focus:outline-none bg-transparent" />
+              <p class="text-xs text-slate-400 mt-1">normal 7.35–7.45</p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">PaO₂</p>
+              <input id="abg-pao2" type="number" placeholder="95"
+                class="w-full text-2xl font-bold text-slate-800 focus:outline-none bg-transparent" />
+              <p class="text-xs text-slate-400 mt-1">mmHg · normal 80–100</p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">PaCO₂</p>
+              <input id="abg-paco2" type="number" placeholder="40"
+                class="w-full text-2xl font-bold text-slate-800 focus:outline-none bg-transparent" />
+              <p class="text-xs text-slate-400 mt-1">mmHg · normal 35–45</p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">HCO₃⁻</p>
+              <input id="abg-hco3" type="number" step="0.1" placeholder="24"
+                class="w-full text-2xl font-bold text-slate-800 focus:outline-none bg-transparent" />
+              <p class="text-xs text-slate-400 mt-1">mmol/L · normal 22–26</p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Base Excess</p>
+              <input id="abg-be" type="number" step="0.1" placeholder="0"
+                class="w-full text-2xl font-bold text-slate-800 focus:outline-none bg-transparent" />
+              <p class="text-xs text-slate-400 mt-1">mmol/L · normal ±2</p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Lactate</p>
+              <input id="abg-lactate" type="number" step="0.1" placeholder="1.0"
+                class="w-full text-2xl font-bold text-slate-800 focus:outline-none bg-transparent" />
+              <p class="text-xs text-slate-400 mt-1">mmol/L · normal &lt;2.0</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional values -->
+        <div class="mb-6">
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+            Additional Values <span class="normal-case font-normal text-slate-300 ml-1">optional — needed for anion gap</span>
+          </label>
+          <div class="grid grid-cols-4 gap-3">
+            <div class="bg-white border border-slate-200 rounded-xl p-3">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Na⁺</p>
+              <input id="abg-na" type="number" placeholder="140"
+                class="w-full text-lg font-bold text-slate-800 focus:outline-none bg-transparent" />
+              <p class="text-xs text-slate-400 mt-0.5">mmol/L</p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-3">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Cl⁻</p>
+              <input id="abg-cl" type="number" placeholder="104"
+                class="w-full text-lg font-bold text-slate-800 focus:outline-none bg-transparent" />
+              <p class="text-xs text-slate-400 mt-0.5">mmol/L</p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-3">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Albumin</p>
+              <input id="abg-albumin" type="number" step="0.1" placeholder="4.0"
+                class="w-full text-lg font-bold text-slate-800 focus:outline-none bg-transparent" />
+              <p class="text-xs text-slate-400 mt-0.5">g/dL</p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-3">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">FiO₂</p>
+              <input id="abg-fio2" type="number" step="0.01" placeholder="0.21"
+                class="w-full text-lg font-bold text-slate-800 focus:outline-none bg-transparent" />
+              <p class="text-xs text-slate-400 mt-0.5">fraction 0.21–1.0</p>
+            </div>
+          </div>
+          <div class="flex gap-4 mt-3">
+            <label class="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+              <input id="abg-copd" type="checkbox" class="w-4 h-4 rounded border-slate-300 text-blue-600" />
+              Chronic COPD
+            </label>
+            <label class="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+              <input id="abg-ketones" type="checkbox" class="w-4 h-4 rounded border-slate-300 text-blue-600" />
+              Ketones present
+            </label>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button onclick="submitABG()"
+          class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors text-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+          </svg>
+          Interpret with MedGemma
+        </button>
+
+        <div id="abg-result" class="hidden mt-6"></div>
+      </div>
+
+      <!-- Test Cases Panel -->
+      <div id="abg-panel-testcases" style="display:none">
+        <div id="abg-tc-loading" class="flex items-center gap-3 text-sm text-slate-400">
+          <div class="w-4 h-4 border-2 border-slate-200 border-t-blue-500 rounded-full animate-spin"></div>
+          Loading test cases…
+        </div>
+        <div id="abg-tc-list" class="flex flex-col gap-4"></div>
+      </div>
+
+      <!-- History Panel -->
+      <div id="abg-panel-history" style="display:none">
+        <div class="flex gap-3 mb-6 flex-wrap items-center">
+          <input id="abg-h-patient" type="text" placeholder="Filter by patient ID"
+            class="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 bg-white" />
+          <button onclick="loadABGHistory()"
+            class="border border-slate-200 rounded-lg px-4 py-2 text-sm font-medium hover:border-blue-400 hover:text-blue-600 transition-colors bg-white">
+            Refresh
+          </button>
+        </div>
+        <div id="abg-history-list" class="flex flex-col gap-3"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="app.js?v=4"></script>
+<script>
+  // Inline fallback — ensures navigation works even if app.js has a parse issue
+  if (typeof enterApp === 'undefined') {
+    function enterApp() {
+      document.getElementById('landing').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      if (typeof checkHealth === 'function') checkHealth();
+      if (typeof loadTestCases === 'function') loadTestCases();
+    }
+    function goBack() {
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('landing').style.display = 'flex';
+    }
+    console.warn('app.js did not define enterApp — using inline fallback. Check app.js for syntax errors.');
+  }
+</script>
+</body>
+</html>

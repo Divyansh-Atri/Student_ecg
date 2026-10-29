@@ -1,0 +1,60 @@
+# ── Data & models ─────────────────────────────────────────────────────────────
+
+
+
+
+# ── Runtime data (generated at startup) ───────────────────────────────────────
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# ── Environment & secrets ──────────────────────────────────────────────────────
+.env
+*.key
+
+# ── Python ────────────────────────────────────────────────────────────────────
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Logs & PIDs ───────────────────────────────────────────────────────────────
+*.log
+*.pid
+logs/
+
+# ── CLAUDE utilities ──────────────────────────────────────────────────────────
+.claude/
+tasks/
+CLAUDE.md
+plans/
+
+# ── Model weights (too large for GitHub) ──
+*.gguf
+
+# ── MIMIC-III data (PhysioNet DUA prohibits redistribution) ───────────────────
+mimic-iii-clinical-database-demo-1.4/
+
+# ── MedGemma model weights (too large for GitHub) ──────────────────────────────
+medgemma-4-bit-model/

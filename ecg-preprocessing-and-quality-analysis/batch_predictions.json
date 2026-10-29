@@ -1,0 +1,87 @@
+[
+    {
+        "modality": "ECG",
+        "metadata": {
+            "source_file": "00000000_118e00_nst_ecg.csv",
+            "pipeline_version": "1.0.0"
+        },
+        "quality_metrics": {
+            "label": "POOR",
+            "score_pct": 0.28846153846153844
+        },
+        "clinical_features": {
+            "arrhythmia_detected": true,
+            "probability": 0.0,
+            "burden_pct": 92.21153846153847
+        },
+        "prompt_override": "The patient's ECG signal has POOR quality. The analysis detected an arrhythmia burden of 92.2%. Please provide a detailed clinical interpretation."
+    },
+    {
+        "modality": "ECG",
+        "metadata": {
+            "source_file": "00000000_118e06_nst_ecg.csv",
+            "pipeline_version": "1.0.0"
+        },
+        "quality_metrics": {
+            "label": "POOR",
+            "score_pct": 0.0
+        },
+        "clinical_features": {
+            "arrhythmia_detected": true,
+            "probability": 0.0,
+            "burden_pct": 84.51923076923077
+        },
+        "prompt_override": "The patient's ECG signal has POOR quality. The analysis detected an arrhythmia burden of 84.5%. Please provide a detailed clinical interpretation."
+    },
+    {
+        "modality": "ECG",
+        "metadata": {
+            "source_file": "00000000_118e12_nst_ecg.csv",
+            "pipeline_version": "1.0.0"
+        },
+        "quality_metrics": {
+            "label": "POOR",
+            "score_pct": 0.0
+        },
+        "clinical_features": {
+            "arrhythmia_detected": true,
+            "probability": 0.0,
+            "burden_pct": 72.3076923076923
+        },
+        "prompt_override": "The patient's ECG signal has POOR quality. The analysis detected an arrhythmia burden of 72.3%. Please provide a detailed clinical interpretation."
+    },
+    {
+        "modality": "ECG",
+        "metadata": {
+            "source_file": "00000000_118e18_nst_ecg.csv",
+            "pipeline_version": "1.0.0"
+        },
+        "quality_metrics": {
+            "label": "POOR",
+            "score_pct": 0.0
+        },
+        "clinical_features": {
+            "arrhythmia_detected": true,
+            "probability": 0.0,
+            "burden_pct": 60.57692307692307
+        },
+        "prompt_override": "The patient's ECG signal has POOR quality. The analysis detected an arrhythmia burden of 60.6%. Please provide a detailed clinical interpretation."
+    },
+    {
+        "modality": "ECG",
+        "metadata": {
+            "source_file": "00000000_118e24_nst_ecg.csv",
+            "pipeline_version": "1.0.0"
+        },
+        "quality_metrics": {
+            "label": "POOR",
+            "score_pct": 0.0
+        },
+        "clinical_features": {
+            "arrhythmia_detected": true,
+            "probability": 0.0,
+            "burden_pct": 56.05769230769231
+        },
+        "prompt_override": "The patient's ECG signal has POOR quality. The analysis detected an arrhythmia burden of 56.1%. Please provide a detailed clinical interpretation."
+    }
+]

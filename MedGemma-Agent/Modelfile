@@ -1,0 +1,11 @@
+FROM ./medgemma-4-bit-model/medgemma-1.5-4b-it-Q4_K_M.gguf
+
+PARAMETER num_ctx 4096
+PARAMETER temperature 0.1
+
+TEMPLATE """<start_of_turn>user
+{{ .Prompt }}<end_of_turn>
+<start_of_turn>model
+"""
+
+SYSTEM "You are MedGemma, a medical AI assistant for post-operative patient monitoring. You provide structured clinical decision support based on vital signs and patient history. You never diagnose, prescribe, or replace clinical judgment."

@@ -1,0 +1,14 @@
+/* Tailwind handles all styling. This file only holds the few things it can't. */
+
+.active-tab {
+  background-color: #eff6ff;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 0.7s linear infinite;
+}

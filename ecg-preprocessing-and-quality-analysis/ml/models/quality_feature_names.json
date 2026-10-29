@@ -1,0 +1,17 @@
+[
+  "mean",
+  "std",
+  "kurtosis",
+  "skewness",
+  "range_p95",
+  "range_p99",
+  "rms",
+  "zero_crossing_rate",
+  "baseline_pp",
+  "drift_ratio",
+  "powerline_ratio",
+  "hf_ratio",
+  "flatline_fraction",
+  "clipping_ratio",
+  "autocorr_lag1"
+]

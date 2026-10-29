@@ -1,0 +1,2 @@
+filename,recording_timestamp_ms,patch_id,success,error_message,duration_s,sampling_rate_est_hz,irregular_gap_fraction,quality_score_0_100,quality_label,flatline_count,spike_count,jump_count,variance_clean,heart_rate_bpm,rpeak_count
+00000000_118e24_nst_ecg.csv,0,118e24,True,,1805.544,333.3333333333333,0.0,82.26554887904295,GOOD,0,19,9548,0.13154344070152946,75.70684111320547,2277

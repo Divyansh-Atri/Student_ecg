@@ -1,0 +1,40 @@
+================================================================================
+CLEAN ECG PREPROCESSING REPORT
+================================================================================
+Generated: 2026-05-30 01:48:05
+
+PREPROCESSING STEPS
+--------------------------------------------------------------------------------
+- Outlier control: robust clipping (median +/- 12*MAD)
+- Spike suppression: Hampel filter (~200 ms window)
+- High-pass @ ~0.5 Hz (baseline wander removal)
+- Notch @ 50 Hz (powerline interference removal)
+- Low-pass @ ~40 Hz (high-frequency/EMG noise removal)
+- NeuroKit2: nk.ecg_clean(method='neurokit')
+
+METRICS
+--------------------------------------------------------------------------------
+Target sampling rate:        125.00 Hz
+Quality score:               26.4/100 (UNUSABLE)
+Usable segments:             71/361 (19.7%)
+Baseline stability:          stable (drift ratio 17.3%)
+Noise (powerline):           0.6%
+Noise (HF/motion/EMG):       6.0%
+Clipping/saturation ratio:   0.00%
+Missing/interpolated ratio:  0.00%
+
+RECOMMENDATIONS
+--------------------------------------------------------------------------------
+- Significant portions of the signal are unusable due to noise.
+
+R-PEAK DETECTION
+--------------------------------------------------------------------------------
+R-peaks detected:            2631
+Estimated heart rate:        88.06 BPM
+
+SIGNAL STATISTICS
+--------------------------------------------------------------------------------
+Raw:     mean=-5.912843 std=0.571724 min=-8.165278 max=-2.037222
+Cleaned: mean=0.036782 std=0.426517 min=-1.559014 max=3.305617
+
+Note: This report is for data QC only (not diagnosis).
